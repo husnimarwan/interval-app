@@ -41,10 +41,13 @@ class IntervalTimer {
         this.timeDisplay.textContent = this.formatTime(this.timeLeft);
         this.roundInfo.textContent = `Round: ${this.currentRound}/${this.getSettings().rounds}`;
         
-        const settings = this.getSettings();
-        const totalTime = this.currentPhase === 'work' ? settings.workTime : settings.restTime;
-        const progress = ((totalTime - this.timeLeft) / totalTime) * 100;
-        this.progressBar.style.width = `${progress}%`;
+        // Only update progress if there's an active interval
+        if (this.timerId !== null && this.timeLeft > 0) {
+            const settings = this.getSettings();
+            const totalTime = this.currentPhase === 'work' ? settings.workTime : settings.restTime;
+            const progress = ((totalTime - this.timeLeft) / totalTime) * 100;
+            this.progressBar.style.width = `${progress}%`;
+        }
     }
 
     start() {
@@ -80,7 +83,8 @@ class IntervalTimer {
         this.currentPhase = 'work';
         this.phaseDisplay.textContent = 'Get Ready!';
         this.progressBar.style.width = '0%';
-        this.updateDisplay();
+        this.timeDisplay.textContent = '00:00';
+        this.roundInfo.textContent = `Round: 0/${this.getSettings().rounds}`;
     }
 
     tick() {
